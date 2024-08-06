@@ -17,8 +17,7 @@ body{
 	
 }
 .container-inner{
-	position: relative;
-	top: 4px; 
+	
 	margin: 0 auto;
     margin-top: 5px; 
 	display: flex; 
@@ -38,6 +37,10 @@ body{
 	margin: 3px;
 	border-radius: 3px;
 	background-color: #738c7e;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	justify-content: center;
 }
 button{
 	height: 80px;
@@ -62,7 +65,12 @@ button:hover {
 	font-size: 40px;
 
 }
-
+.previous{
+	
+}
+.current{
+	display: block;
+}
 .screen{
 	display: flex;
 	justify-content: flex-end;

@@ -7,13 +7,13 @@
 
 </head>
 <body>
-  <p>test github</p>
+  
     <div class="calc-container">
         <div class="container-outer">
             <div class="container-inner">
               <div class="screen">
                 <div class="previous text"></div>
-                <div class="current text">123</div>
+                <div data-value="" class="current text"></div>
                 
               </div>
         
@@ -25,30 +25,30 @@
               </div>
         
               <div class="buttons group-1">
-                <button data-number id="btn-7" class="number" value="7">7</button>
-                <button data-number id="btn-8" class="number" value="8">8</button>
-                <button data-number id="btn-9" class="number" value="9">9</button>
-                <button id="divide" class="operator" value="divide">÷</button>
+                <button data-number="7"  class="number" value="7">7</button>
+                <button data-number="8"  class="number" value="8">8</button>
+                <button data-number="9"  class="number" value="9">9</button>
+                <button data-operator="/" class="operator" value="divide">÷</button>
                
               </div>
               
               <div class="buttons group-2">
-                <button data-number  id="btn-4" class="number btn" value="4">4</button>
-                <button data-number  id="btn-5" class="number btn" value="5">5</button>
-                <button data-number  id="btn-6" class="number btn" value="6">6</button>
-                <button data-operator id="subtract" class="operator btn" value="sub">−</button>
+                <button data-number="4"   class="number btn" value="4">4</button>
+                <button data-number="5"   class="number btn" value="5">5</button>
+                <button data-number="6"   class="number btn" value="6">6</button>
+                <button data-operator="-" class="operator btn" value="sub">−</button>
               </div>
               <div class="buttons group-3">
-                <button data-number id="btn-1" class="number btn" value="1">1</button>
-                <button data-number  id="btn-2" class="number btn" value="2">2</button>
-                <button data-number  id="btn-3" class="number btn" value="3">3</button>
-                <button data-operator  id="multiply" class="operator btn" value="multiply">×</button>
+                <button data-number="1"  class="number btn" value="1">1</button>
+                <button data-number="2"  class="number btn" value="2">2</button>
+                <button data-number="3"  class="number btn" value="3">3</button>
+                <button data-operator="×" class="operator btn" value="multiply">×</button>
               </div>
               <div class="buttons group-4">
-                <button class="number btn" value="point">.</button>
-                <button data-number id="btn-0" class="number btn" value="0">0</button>
-                <button  id="btn-10" class="btn" value="equate">=</button> 
-                <button data-operator id="btn-11" class="operator btn" value="add">+</button>
+                <button data-operator="." class="number btn" value="point">.</button>
+                <button data-number="0" class="number btn" value="0">0</button>
+                <button data-equals="=" class="btn" value="equate">=</button> 
+                <button data-operator="+"  class="operator btn" value="add">+</button>
                 
               </div>
             </div>
