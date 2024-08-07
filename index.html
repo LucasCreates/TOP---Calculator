@@ -12,16 +12,29 @@
         <div class="container-outer">
             <div class="container-inner">
               <div class="screen">
-                <div class="previous text"></div>
-                <div data-value="" class="current text"></div>
+                <div class="previous"></div>
+                <div data-value="" class="current"></div>
                 
               </div>
         
               <div class="buttons group-0">
                 <button value="ac">AC</button>
-                <button value="bracket" >(x)</button>
-                <button value="square" >x&sup2</button>
+                <button value="bracket" >(</button>
+                <button value="square" >)</button>
                 <button value="del" >Del</button>
+              </div>
+
+              <div class="buttons basic">
+                <button value="plus-minus">&plusmn</button>
+                <button value="bracket" >%</button>
+                <button value="square" >x&sup2</button>
+                <button value="adv" >Adv</button>
+              </div>
+              <div class="buttons advance">
+                <button value="plus-minus">&#8730</button>
+                <button value="bracket" >&pi;</button>
+                <button value="square" >x!</button>
+                <button value="adv" id="back" >Back</button>
               </div>
         
               <div class="buttons group-1">
@@ -42,7 +55,7 @@
                 <button data-number="1"  class="number btn" value="1">1</button>
                 <button data-number="2"  class="number btn" value="2">2</button>
                 <button data-number="3"  class="number btn" value="3">3</button>
-                <button data-operator="×" class="operator btn" value="multiply">×</button>
+                <button data-operator="x" class="operator btn" value="multiply">×</button>
               </div>
               <div class="buttons group-4">
                 <button data-operator="." class="number btn" value="point">.</button>

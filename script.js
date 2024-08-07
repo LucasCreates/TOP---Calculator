@@ -3,74 +3,185 @@ let firstNum = [];
 let setFirstNum;
 let secondNum = [];
 let setSecondNum;
+let result;
 let operator;
 let setOperator;
-let selectFirstNum = true;
-let selectOperator = false;
-let selectSecondNum = false;
+let isSelectFirstNum = true;
+let isSelectOperator = false;
+let isSelectSecondNum = false;
+let isEqualSelected = false;
+let times = "&times"
 
 
 const screen = document.querySelector(".screen");
 const currentValue = document.querySelector(".current");
 const previousValue = document.querySelector(".previous");
 
+const advanceBtn = document.querySelector(".advance")
+let advanceOptions = false;
+const backBtn = document.querySelector(".basic")
+
+
+
 for (const btn of button){
     btn.addEventListener("click", function(e){
+       
 
-
-        if(selectFirstNum && e.target.dataset.number){
+        if(isSelectFirstNum && e.target.dataset.number ){
             
-            currentValue.textContent += e.target.dataset.number
+            currentValue.textContent += e.target.dataset.number;
+            if(currentValue.textContent.length > 12){
+                currentValue.style.fontSize = "30px"
+                currentValue.style.marginRight = "0px"
+                if (currentValue.textContent.length > 16){
+                    currentValue.style.fontSize = "20px"
+                    if (currentValue.textContent.length > 24){
+                        isSelectFirstNum = false;
+                    }
+                }
+            }
+  
             firstNum.push(e.target.dataset.number);   
             setFirstNum = parseInt(firstNum.join(""))
-            selectOperator = true;
-         
+            isSelectOperator = true;
+            
+            // && currentValue.textContent.length < 16
         }
-        if (selectOperator){  
+        if (isSelectOperator){  
             operator = e.target.dataset.operator;
+            console.log(operator)
             if(operator !== undefined){
-                currentValue.textContent += ` ${operator} `;
+                currentValue.textContent = null;
+                previousValue.textContent = `${setFirstNum} ${operator} `;
                 
-                selectFirstNum = false;
-                selectOperator = false;
-                selectSecondNum = true;
-                console.log(operator)
+                isSelectFirstNum = false;
+                isSelectOperator = false;
+                isSelectSecondNum = true;
+                
             }
         }
-        if (selectSecondNum && e.target.dataset.number && !selectOperator){
-            currentValue.textContent += e.target.dataset.number
+        if (isSelectSecondNum && e.target.dataset.number && !isSelectOperator){
+            currentValue.textContent += e.target.dataset.number;
+            if(currentValue.textContent.length > 12){
+                currentValue.style.fontSize = "30px"
+                currentValue.style.marginRight = "0px"
+                if (currentValue.textContent.length > 16){
+                    currentValue.style.fontSize = "20px"
+                    if (currentValue.textContent.length > 24){
+                        isSelectFirstNum = false;
+                    }
+                }
+            }
             secondNum.push(e.target.dataset.number);   
             setSecondNum = parseInt(secondNum.join(""))
-            // selectOperator = true
+            previousValue.textContent = `${setFirstNum} ${operator} ${setSecondNum} `;
+          
             
         }
-        if (e.target.dataset.equals){
-            operate(setFirstNum, operator, setSecondNum)
-        }
-        
+      
+
+        if (e.target.value === "adv"){moreOption()}
+        if (e.target.value === "."){convertToFloat()}
+        if (e.target.dataset.equals){ operate(setFirstNum, operator, setSecondNum)} // equating the results 
+        if (e.target.value === "ac"){clearScreen()};
+        if (e.target.value === "del"){del()};
        
-    })
+    });
    
 }
 
+
+
+
 function operate(firstNum, op, secondNum){
-  
-    let total = firstNum + secondNum;
-  
-    console.log(`${firstNum} ${op} ${secondNum} = ${total}`);
-    return currentValue.textContent = total;
-
+    console.log("working")
+    isEqualSelected = true;
+    switch (op){
+        case "+":
+            add(firstNum, secondNum);
+            break;
+        case "x":
+            multiply(firstNum, secondNum);
+            break;
+        case "/":
+            divide(firstNum, secondNum);
+            break;
+        case "-":
+            sub(firstNum, secondNum); 
+            break;
+    }
 }
-
+// &times
 function add(firstNum, secondNum){
-    return currentValue.textContent = (firstNum + secondNum);
+    isEqualSelected = false;
+    result = firstNum + secondNum;
+    previousValue.textContent += `= ${result}`;
+    currentValue.textContent = result;
+    return result;
 }
 function sub(firstNum, secondNum){
-    return firstNum - secondNum;
+    result = firstNum - secondNum;
+    previousValue.textContent += `= ${result}`;
+    currentValue.textContent = result;
+    return result;
 }
 function divide(firstNum, secondNum){
-    return firstNum / secondNum;
+    result = firstNum / secondNum;
+    previousValue.textContent += `= ${result}`;
+    currentValue.textContent = result;
+    return result;
 }
 function multiply(firstNum, secondNum){
-    return firstNum * secondNum;
+    result = firstNum * secondNum;
+    previousValue.textContent += `= ${result}`;
+    currentValue.textContent = result;
+    return result;
+}
+
+
+
+function moreOption(){
+    if (!advanceOptions){
+        backBtn.style.display = "none";
+        advanceBtn.style.display = "inline";
+        advanceOptions = true;
+    }
+    else {
+        backBtn.style.display = "inline";
+        advanceBtn.style.display = "none";
+        advanceOptions = false;
+    }
+}
+
+function del(){
+    if(isSelectFirstNum){
+        firstNum.pop();
+        currentValue.textContent = firstNum.join("");
+    }
+    else if(isSelectSecondNum && !isSelectFirstNum){
+        secondNum.pop();
+        previousValue.textContent = `${firstNum.join("")} ${operator} ${secondNum.join("")}`;
+        currentValue.textContent = secondNum.join("");
+       
+    }
+    else if (isEqualSelected){
+        console.log("equals has been selected")
+    }
+}
+
+function clearScreen(){
+    currentValue.textContent = "";
+    currentValue.style.fontSize = "40px"
+    previousValue.textContent = "";
+    firstNum = [];
+    setFirstNum = 0;
+    secondNum = [];
+    setSecondNum = 0;
+    result = 0;
+    operator = "";
+    setOperator = "";
+    isSelectFirstNum = true;
+    isSelectOperator = false;
+    isSelectSecondNum = false;
+
 }
