@@ -11,10 +11,12 @@ body{
 .container-outer{
 	margin-top: 100px;
 	border: 5px solid #5e5d5d;
-	height: 580px;
+	/* height: 580px; */
+	height: auto;
 	width: 300px;
 	background-color: #827f7f;
 	border-radius: 10px;
+	
 	
 }
 .container-inner{
@@ -24,24 +26,32 @@ body{
 	display: flex; 
 	flex-direction: column; 
 	flex-wrap: wrap; 
-	height: 567px;
-	width: 290px;
+	align-items: center;
+	height: auto;
+	/* height: 567px; */
+	width: auto;
 	background-color:#474747;
 	border: 1px solid #a6a6a6;
 	border-radius: 5px;
+	
 
 }  
 
 .screen{
-	height: 80px;
+	max-height: auto;
+	min-height: 80px;
 	width: 98%;
 	margin: 3px;
 	border-radius: 3px;
 	background-color: #738c7e;
+	/* display: inline-block; */
 	display: flex;
+	box-sizing: border-box;
 	flex-direction: column;
 	align-items: flex-end;
 	justify-content: flex-end;
+	overflow: hidden;
+	text-align: right;
 	
 	
 }
@@ -65,18 +75,28 @@ button:hover {
 	display: block;
 	margin-right: 3px;
 	text-align: right;
+
 }
 .current{
-	height: 40px;
-	font-size: 40px;
-	margin-right: 5px;
-	margin-bottom: 5px;
 	
+	height: auto;
+	font-size: 37px;
+	margin-right: 5px;
+	/* margin-bottom: 5px; */
+	/* padding: 2px; */
+	width: 100%;
+	animation: blinkZero 1s infinite;
+	
+}
+@keyframes blinkZero {
+	0% {
+		opacity: 0;
+	}
 }
 
 .advance{
 	display: none;
 }
 #back{
-	font-size: 27px;
+	/* font-size: 27px; */
 }
