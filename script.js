@@ -6,18 +6,19 @@ const clearBtn = document.querySelector("[data-clear]")
 const delBtn = document.querySelector("[data-del]")
 const decimalBtn = document.querySelector("[data-decimal]")
 const squareBtn = document.querySelector("[data-square]")
+const plusMinusBtn = document.querySelector("[data-plus-minus]")
 // const br = document.createElement("BR")
 
-let firstValue = 0;
+let firstValue = "";
 let setFirstValue = 0;
-let secondValue = 0;
+let secondValue = "";
 let setSecondValue = 0;
-let result;
+let result = 0;
 let operator = "";
 let setOperator;
 
 let isOperationComplete = false;
-let currentOperation = 0; // this will determine what part the user is on. 0 = first number, 1 = operand and 2 = second number
+let currentOperation = 0; // this will determine what operation the user is on. 0 = first number, 1 = operand and 2 = second number 3 = operate for results
 
 
 
@@ -34,119 +35,160 @@ const backBtn = document.querySelector(".basic")
 // Buttons
 
 btn.forEach((button) =>{
-    button.addEventListener("click", () => {setNumScreen(button.value)})
+    button.addEventListener("click", () => {setNumToScreen(button.textContent)})
 })
 operand.forEach((op) =>{
     op.addEventListener("click", () => {setOperandScreen(op.value)})
 })
 
-equalBtn.addEventListener("click", () => {operate(firstValue, operator, secondValue)});
+equalBtn.addEventListener("click", () => {evaluateOperation()});
 decimalBtn.addEventListener("click", () => {decimalPoint(decimalBtn.value)});
 clearBtn.addEventListener("click", () => {clearScreen()});
 delBtn.addEventListener("click", () => {del()});
 squareBtn.addEventListener("click", () => {impossible()});
+plusMinusBtn.addEventListener("click", () => {checkVariables()});
 
 ////////////////////////////////////////////////////////////////////////
 
-
-
-
-function setNumScreen(value){
-    isOperationComplete = true;
-    if (currentOperation === 0){
-        if(currentValue.textContent == "0"){
-            currentValue.textContent = ""
-            currentValue.style.animation ="none"
-        }
-        currentValue.textContent += value
-        
-        if(currentValue.textContent.length > 12){
-            currentValue.style.fontSize = "28px";
-            if(currentValue.textContent.length > 18){
-                currentValue.style.fontSize = "20px";
-                if(currentValue.textContent.length > 25){
-                    currentOperation == 1
-                    
-                }
-            }
-        }
-    }
-    if(currentOperation === 2){
-        
-        console.log(currentValue.textContent)
-        if(currentValue.textContent == "0"){
-            currentValue.style.animation = "none";
-
-            currentValue.textContent = ""
-        }
-        currentValue.textContent += value
-        secondValue = currentValue.textContent
-        previousValue.textContent = `${firstValue} ${operator} ${secondValue}` 
-        if(currentValue.textContent.length > 12){
-            currentValue.style.fontSize = "28px";
-            if(currentValue.textContent.length > 18){
-                currentValue.style.fontSize = "20px";
-                if(currentValue.textContent.length > 25){
-                    // currentOperation == 1
-                    
-                }
-            }
-        }
-    }
- 
+// Keyboard functionality
+function setKeyboard(event){
+    let key = event.key
+    if(key >= "0" && key <= "9"){setNumToScreen(key)}
+    if(key === "+" || key === "-" || key === "*" || key === "/"){setOperandScreen(key)}
+    if(key === "Enter"){operate(firstValue, operator, secondValue)}
+    if(key === "Escape"){clearScreen()}  
 }
+
+window.addEventListener("keydown", setKeyboard)
+////////////////////////////////////////////////////////////////////////
+
+
+function setNumToScreen(value){
+        removeZero()
+        currentValue.textContent += value;
+}
+
 function setOperandScreen(value){
-    currentOperation = 1;
-    firstValue = currentValue.textContent;
-    if (currentOperation === 1){
+        firstValue = currentValue.textContent
         operator = value;
+        
         currentValue.textContent = "0";
         currentValue.style.animation = "blinkZero 1s infinite";
-
         previousValue.textContent = `${firstValue} ${operator}`;
-        currentOperation = 2;
+}   
+
+function evaluateOperation(){ 
+    secondValue = currentValue.textContent
+    operate(firstValue, operator, secondValue)
+}
+function displayResults(){
+
+    if (result == Infinity){
+        return impossible();
     }
-    
+    return previousValue.textContent = `${firstValue} ${operator} ${secondValue} = ${result}`,
+           currentValue.textContent = roundedResult(result)
 }
 
-function operate(firstValue, operand, secondValue){
-    
-    isOperationComplete = true;
-    currentOperation = 0;
-    firstValue.includes(".") ? setFirstValue = parseFloat(firstValue) : setFirstValue = parseInt(firstValue)
-    secondValue.includes(".") ? setSecondValue = parseFloat(secondValue) : setSecondValue = parseInt(secondValue)
-    
-        switch (operand){
+function operate(firstValue, operator, secondValue){
+
+    setFirstValue = Number(firstValue) // I've learnt that Number() also takes float operations whereas parseInt does not.
+    setSecondValue = Number(secondValue)
+        switch (operator){
         case "+":
             add(setFirstValue, setSecondValue);
             break;
         case "-":
             sub(setFirstValue, setSecondValue);
             break;
-        case "/":  
+        case "÷":  
             divide(setFirstValue, setSecondValue);
             break;
         case "x":
             multiply(setFirstValue, setSecondValue);
             break;
         }
-    
+  
     return firstValue == 0 && operand == "" && secondValue == 0 ? true : displayResults()  
 }
 
-function displayResults(){
-    if (result == Infinity){
-        return impossible()
-    }
-    return previousValue.textContent = `${firstValue} ${operator} ${secondValue} = ${result}`,
-           currentValue.textContent = Math.round(result * 10000000) / 10000000; // round results to 6 decibals
+function add(firstNum, secondNum){
+    result = firstNum + secondNum;
+    return result;
 }
+function sub(firstNum, secondNum){
+    result = firstNum - secondNum;
+    return result;
+}
+function divide(firstNum, secondNum){
+  
+    result = firstNum / secondNum;
+    return result;
+    
+}
+function multiply(firstNum, secondNum){
+    result = firstNum * secondNum;
+    return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function removeZero(){ // removes the blinking zero at the start before userinput
+    if(currentValue.textContent === "0"){
+        currentValue.textContent = "";
+        currentValue.style.animation = "none";
+        
+    }
+}
+
+function preventTextExpand(){ // prevents text from expanding outside the div container. However, I aim to fix this with CSS so just a temp fix.
+    if(currentValue.textContent.length > 12){
+        currentValue.style.fontSize = "28px";
+        if(currentValue.textContent.length > 18){
+            currentValue.style.fontSize = "20px";
+            
+        }
+    }
+}
+
+function roundedResult(result){
+   return Math.round(result * 10000000) / 10000000;
+}
+
 
 
 function decimalPoint(value){
     if(!currentValue.textContent.includes(".")){
-        currentValue.textContent += value;
-        return;  
+       return currentValue.textContent += value;
     } 
     else {return;}
 }
@@ -159,41 +201,25 @@ function del(){
 
 
 function reset(){
-    setFirstValue = 0;
-    setSecondValue = 0;
     isOperationComplete = false;
     currentOperation = 0;
+    currentValue.textContent = "";
+    previousValue.textContent = "";
+    currentValue.style.animation ="none";
 }
 
 
-function add(firstNum, secondNum){
-    isEqualSelected = false;
-    result = firstNum + secondNum;
-    return result;
-}
-function sub(firstNum, secondNum){
-    result = firstNum - secondNum;
-    return result;
-}
-function divide(firstNum, secondNum){
-    result = firstNum / secondNum;
-    return result;
-}
-function multiply(firstNum, secondNum){
-    result = firstNum * secondNum;
-    return result;
-}
 
 
 function clearScreen(){
     currentValue.textContent = "0";
     currentValue.style.animation = "blinkZero 1s infinite";
-    currentValue.style.fontSize = "37px"
+    currentValue.style.fontSize = "37px";
     previousValue.textContent = "";
-    firstValue = 0;
-    setFirstNum = 0;
-    secondValue = 0;
-    setSecondNum = 0;
+    firstValue = "";
+    setFirstValue = 0;
+    secondValue = "";
+    setSecondValue = 0;
     result = 0;
     operator = "";
     setOperator;
@@ -203,16 +229,28 @@ function clearScreen(){
 
 }
 
+function checkVariables(){
+    console.log(`firstValue = ${firstValue}`)
+    console.log(`operator = ${operator}`)
+    console.log(`secondValue = ${secondValue}`)
+   
+    console.log(`result = ${result}`)
+ 
+    // console.log(`currentOperation = ${currentOperation}`)
+    // console.log(`isOperationComplete = ${isOperationComplete}`)
+    console.log(`setFirstNum = ${setFirstValue}`)
+    console.log(`setSecondValue = ${setSecondValue}`)
+}
 
 
 function impossible(){
     let preMessage = "";
-    let curMessage = ""
+    let curMessage = "";
     currentValue.style.animation = "none";
     currentValue.style.fontSize = "12px";
     previousValue.style.fontSize = "12px";
  
-    screen.style.overflow = "hidden"
+    screen.style.overflow = "hidden";
     const cryptic = "afghiopqr:'@#stuvwxyz?;1234590,.<bcde>/~[{]}+=_-jklmn!£$%678^&*()";
     for(i = 0; i <= cryptic.length; i++){
         preMessage += cryptic.charAt(Math.floor(Math.random() * cryptic.length -6))
@@ -220,7 +258,7 @@ function impossible(){
         
     }
     return previousValue.textContent = `${preMessage} WARNING ${preMessage}`,
-           currentValue.textContent = `${curMessage} OVERLOAD ${curMessage.slice(3, 7)} SELF-DESTRUCT`
+           currentValue.textContent = `${curMessage} OVERLOAD ${curMessage.slice(3, 7)} SELF-DESTRUCT`;
     
     
 }
@@ -241,10 +279,25 @@ function impossible(){
 
 
 
+//// Leaving this here before i delete to make sure i don't mess my code up
 
 
-
-
+        // if(currentValue.textContent == "0"){
+        //     currentValue.textContent = "";
+        //     currentValue.style.animation ="none";
+        // }
+        // currentValue.textContent += value
+        // firstValue = currentValue.textContent;
+        // if(currentValue.textContent.length > 12){
+        //     currentValue.style.fontSize = "28px";
+        //     if(currentValue.textContent.length > 18){
+        //         currentValue.style.fontSize = "20px";
+        //         if(currentValue.textContent.length > 25){
+        //             currentOperation == 1 // prevents further number input
+                    
+        //         }
+        //     }
+        // }
 
 
 
