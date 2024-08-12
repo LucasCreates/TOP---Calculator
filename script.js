@@ -5,8 +5,12 @@ const equalBtn = document.querySelector("[data-equals]")
 const clearBtn = document.querySelector("[data-clear]")
 const delBtn = document.querySelector("[data-del]")
 const decimalBtn = document.querySelector("[data-decimal]")
+const expoBtn = document.querySelector("[data-exponant]")
 const squareBtn = document.querySelector("[data-square]")
 const plusMinusBtn = document.querySelector("[data-plus-minus]")
+const advanceMode = document.querySelector(".advance");
+const basicMode = document.querySelector(".basic");
+const bracketBtn = document.querySelector("[data-bracket]")
 // const br = document.createElement("BR")
 
 let firstValue = "";
@@ -16,19 +20,24 @@ let setSecondValue = 0;
 let result = 0;
 let operator = "";
 let setOperator;
+let expo;
+let advanceOptions = false;
+let isBracketSelected = false;
+// let expoSpan;
 
 let isOperationComplete = false;
 let currentOperation = 0; // this will determine what operation the user is on. 0 = first number, 1 = operand and 2 = second number 3 = operate for results
-
+let isExpoOption = false; // if user has pressed the square button.
+let isExpoNumber = false; // when user chooses an exponant number.
 
 
 const screen = document.querySelector(".screen");
 const currentValue = document.querySelector(".current");
 const previousValue = document.querySelector(".previous");
 
-const advanceBtn = document.querySelector(".advance")
-let advanceOptions = false;
-const backBtn = document.querySelector(".basic")
+const advanceBtn = document.querySelector("#adv")
+
+const backBtn = document.querySelector("#back")
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -45,8 +54,11 @@ equalBtn.addEventListener("click", () => {evaluateOperation()});
 decimalBtn.addEventListener("click", () => {decimalPoint(decimalBtn.value)});
 clearBtn.addEventListener("click", () => {clearScreen()});
 delBtn.addEventListener("click", () => {del()});
-squareBtn.addEventListener("click", () => {impossible()});
+expoBtn.addEventListener("click", () => {expoNum()});
 plusMinusBtn.addEventListener("click", () => {checkVariables()});
+advanceBtn.addEventListener("click", () => {moreOption()})
+backBtn.addEventListener("click", () => {moreOption()})
+bracketBtn.addEventListener("click", () => {bracket()})
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -65,18 +77,41 @@ window.addEventListener("keydown", setKeyboard)
 
 function setNumToScreen(value){
         removeZero()
+        preventTextExpand()
+        
         currentValue.textContent += value;
+        if (isExpoNumber){
+            setExpoNumber(value)
+        }
+     
+        
+}
+
+function setExpoNumber(value){ // this function does the calculation when user selects what exponant number to use.
+    currentValue.textContent = currentValue.textContent.toString().slice(0, -1);
+    currentValue.textContent = currentValue.textContent.toString().slice(0, -1);
+    expo.textContent = value;
+    return currentValue.textContent = Math.pow(Number(currentValue.textContent), Number(expo.textContent))
 }
 
 function setOperandScreen(value){
+        isExpoNumber = false
         firstValue = currentValue.textContent
         operator = value;
         
         currentValue.textContent = "0";
-        currentValue.style.animation = "blinkZero 1s infinite";
+        
         previousValue.textContent = `${firstValue} ${operator}`;
+        if(firstValue !== "" && operator !== "") {
+            secondValue = currentValue.textContent
+            operator = value
+            currentValue.textContent = `${secondValue}`;
+           
+        }
 }   
+/////////////////////////////////////////////////////////////////
 
+// Evaluate and print to screen functions
 function evaluateOperation(){ 
     secondValue = currentValue.textContent
     operate(firstValue, operator, secondValue)
@@ -91,7 +126,11 @@ function displayResults(){
 }
 
 function operate(firstValue, operator, secondValue){
-
+    if (firstValue.includes("(") && firstValue.includes(")")){
+        console.log("value has brackets")
+        firstValue.toString().slice(0, -1);
+        firstValue.toString().slice(0);
+    }
     setFirstValue = Number(firstValue) // I've learnt that Number() also takes float operations whereas parseInt does not.
     setSecondValue = Number(secondValue)
         switch (operator){
@@ -111,6 +150,11 @@ function operate(firstValue, operator, secondValue){
   
     return firstValue == 0 && operand == "" && secondValue == 0 ? true : displayResults()  
 }
+///////////////////////////////////////////////////////////////////
+
+
+
+
 
 function add(firstNum, secondNum){
     result = firstNum + secondNum;
@@ -151,13 +195,64 @@ function multiply(firstNum, secondNum){
 
 
 
+function moreOption(){
+    if (!advanceOptions){
+        basicMode.style.display = "none";
+        advanceMode.style.display = "inline";
+        advanceOptions = true;
+    }
+    else {
+        basicMode.style.display = "inline";
+        advanceMode.style.display = "none";
+        advanceOptions = false;
+    }
+}
 
+//"²"
+function expoNum(){
+    if(!isExpoOption){
+        // expoSpan = document.createElement("span")
+        expo = document.createElement("sup")
+        expo.classList.add("power")
+        expo.textContent = "x";
+        isExpoNumber = true;
+        currentValue.appendChild(expo)
+        
+        return  
+    }
+}
 
+function bracket(){
+    removeZero()
+    if (!isBracketSelected){
+        console.log("bracket working true")
+        currentValue.textContent  += "(";
+        isBracketSelected = true
+        
+    }
+   
+    else{
+        currentValue.textContent  += ")";
+        console.log("bracket working false")
+        isBracketSelected = false
+        
+    }
+   
 
+   
 
+}
 
-
-
+// function exponant(number){
+//     // currentValue.style.animation = "blinkZero 1s infinite";
+  
+//    // (${exponant(currentValue.textContent)})
+//     return number
+//    // currentValue.textContent += "x" 
+   
+    
+    
+// }
 
 
 
@@ -171,9 +266,13 @@ function removeZero(){ // removes the blinking zero at the start before userinpu
 }
 
 function preventTextExpand(){ // prevents text from expanding outside the div container. However, I aim to fix this with CSS so just a temp fix.
+    // previousValue.style.fontSize = "20px"
     if(currentValue.textContent.length > 12){
+        previousValue.style.fontSize = "16px"
         currentValue.style.fontSize = "28px";
+        
         if(currentValue.textContent.length > 18){
+            previousValue.style.fontSize = "12px"
             currentValue.style.fontSize = "20px";
             
         }
@@ -213,7 +312,7 @@ function reset(){
 
 function clearScreen(){
     currentValue.textContent = "0";
-    currentValue.style.animation = "blinkZero 1s infinite";
+    // currentValue.style.animation = "blinkZero 1s infinite";
     currentValue.style.fontSize = "37px";
     previousValue.textContent = "";
     firstValue = "";
@@ -225,6 +324,8 @@ function clearScreen(){
     setOperator;
     currentOperation = 0;
     isOperationComplete = false;
+    isExpoOption = false;
+    isExpoNumber = false;
 
 
 }
@@ -233,7 +334,7 @@ function checkVariables(){
     console.log(`firstValue = ${firstValue}`)
     console.log(`operator = ${operator}`)
     console.log(`secondValue = ${secondValue}`)
-   
+    console.log(isExpoOption)
     console.log(`result = ${result}`)
  
     // console.log(`currentOperation = ${currentOperation}`)
