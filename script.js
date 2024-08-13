@@ -94,8 +94,8 @@ function setNumToScreen(value){
         
         if (isExpoNumber){
            
-            setExpoNumber(value)
-            previousValue.textContent = `${Math.floor(Math.log(currentValue.textContent)/Math.log(value)) + 1}^${value}` //displays what the NUMBER is that is to be powered.
+            setExpoNumber(value)                                                                                         // Just discovered bugs and this doesn't display what it should. 
+            previousValue.textContent = `${Math.floor(Math.log(currentValue.textContent)/Math.log(value)) + 1}^${value}` //displays what the NUMBER is that is to be powered. WIP
             isExpoOption = false
         }
      
@@ -215,36 +215,29 @@ function moreOption(){
 //"²"
 
 function bracket(){
-    removeZero()
-    if (!isBracketSelected){
-        console.log("bracket working true")
-        currentValue.textContent  += "(";
-        isBracketSelected = true
+    currentValue.style.fontSize = "18px"
+    return currentValue.textContent = "Work in progress..."
+    // removeZero()
+    // if (!isBracketSelected){
+    //     console.log("bracket working true")
+    //     currentValue.textContent  += "(";
+    //     isBracketSelected = true
         
-    }
+    // }
    
-    else{
-        currentValue.textContent  += ")";
-        console.log("bracket working false")
-        isBracketSelected = false
+    // else{
+    //     currentValue.textContent  += ")";
+    //     console.log("bracket working false")
+    //     isBracketSelected = false
         
-    }
+    // }
    
 
    
 
 }
 
-// function exponant(number){
-//     // currentValue.style.animation = "blinkZero 1s infinite";
-  
-//    // (${exponant(currentValue.textContent)})
-//     return number
-//    // currentValue.textContent += "x" 
-   
     
-    
-// }
 function percentage(){
     previousValue.textContent = `${currentValue.textContent}%`
     return currentValue.textContent /= 100
