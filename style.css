@@ -50,8 +50,10 @@ body{
 	flex-direction: column;
 	align-items: flex-end;
 	justify-content: flex-end;
-	overflow: hidden;
+	/* overflow: hidden; */
 	text-align: right;
+	word-wrap: break-word;
+	word-break: break-all;
 	
 	
 }
@@ -85,8 +87,9 @@ button:hover {
 	margin-right: 5px;
 	/* margin-bottom: 5px; */
 	/* padding: 2px; */
-	width: 100%;
-	animation: blinkZero 1s infinite;
+	width: auto;
+	
+	/* animation: blinkZero 1s infinite; */
 	
 }
 @keyframes blinkZero {

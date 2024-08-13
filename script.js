@@ -11,6 +11,11 @@ const plusMinusBtn = document.querySelector("[data-plus-minus]")
 const advanceMode = document.querySelector(".advance");
 const basicMode = document.querySelector(".basic");
 const bracketBtn = document.querySelector("[data-bracket]")
+const squareRoottBtn = document.querySelector("[data-squareroot]")
+const piBtn = document.querySelector("[data-pi]")
+const factorialBtn = document.querySelector("[data-factorial]")
+const percentBtn = document.querySelector("[data-percent]")
+
 // const br = document.createElement("BR")
 
 let firstValue = "";
@@ -23,6 +28,7 @@ let setOperator;
 let expo;
 let advanceOptions = false;
 let isBracketSelected = false;
+let isNegative = false;
 // let expoSpan;
 
 let isOperationComplete = false;
@@ -55,10 +61,16 @@ decimalBtn.addEventListener("click", () => {decimalPoint(decimalBtn.value)});
 clearBtn.addEventListener("click", () => {clearScreen()});
 delBtn.addEventListener("click", () => {del()});
 expoBtn.addEventListener("click", () => {expoNum()});
-plusMinusBtn.addEventListener("click", () => {checkVariables()});
+squareBtn.addEventListener("click", () => {square()});
+plusMinusBtn.addEventListener("click", () => {setPlusOrMinus()});
 advanceBtn.addEventListener("click", () => {moreOption()})
 backBtn.addEventListener("click", () => {moreOption()})
 bracketBtn.addEventListener("click", () => {bracket()})
+squareRoottBtn.addEventListener("click", () => {squareRoot()})
+piBtn.addEventListener("click", () => {pi()})
+factorialBtn.addEventListener("click", () => {factorial()})
+percentBtn.addEventListener("click", () => {percentage()})
+
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -77,11 +89,14 @@ window.addEventListener("keydown", setKeyboard)
 
 function setNumToScreen(value){
         removeZero()
-        preventTextExpand()
+        // preventTextExpand()
         
         currentValue.textContent += value;
+        
         if (isExpoNumber){
+           
             setExpoNumber(value)
+             previousValue.textContent = `(${currentValue.textContent})^${value}`
         }
      
         
@@ -126,10 +141,12 @@ function displayResults(){
 }
 
 function operate(firstValue, operator, secondValue){
-    if (firstValue.includes("(") && firstValue.includes(")")){
-        console.log("value has brackets")
-        firstValue.toString().slice(0, -1);
-        firstValue.toString().slice(0);
+    // I'll come back to the bracket stuff as it's just a bit too complex for me right now.
+    if (firstValue.includes("(") && firstValue.includes(")") || secondValue.includes("(") && secondValue.includes(")")){
+        currentValue.textContent = firstValue.slice(1, -1)
+        currentValue.textContent = secondValue.slice(1, -1)
+        firstValue = currentValue.textContent
+        secondValue = currentValue.textContent
     }
     setFirstValue = Number(firstValue) // I've learnt that Number() also takes float operations whereas parseInt does not.
     setSecondValue = Number(secondValue)
@@ -209,18 +226,6 @@ function moreOption(){
 }
 
 //"²"
-function expoNum(){
-    if(!isExpoOption){
-        // expoSpan = document.createElement("span")
-        expo = document.createElement("sup")
-        expo.classList.add("power")
-        expo.textContent = "x";
-        isExpoNumber = true;
-        currentValue.appendChild(expo)
-        
-        return  
-    }
-}
 
 function bracket(){
     removeZero()
@@ -253,8 +258,70 @@ function bracket(){
     
     
 // }
+function percentage(){
+    previousValue.textContent = `${currentValue.textContent}%`
+    return currentValue.textContent /= 100
+}
 
+function square(){
+    previousValue.textContent = `${currentValue.textContent}^2`
+    console.log(Math.sqrt(currentValue.textContent))
+    return currentValue.textContent = (currentValue.textContent ** 2)
+}
+function expoNum(){
+    if(!isExpoOption){
+        // expoSpan = document.createElement("span")
+        expo = document.createElement("sup")
+        expo.classList.add("power")
+        expo.textContent = "n";
+        isExpoNumber = true;
+        currentValue.appendChild(expo)
+        
+        return  
+    }
+}
 
+function squareRoot(){
+    currentValue.style.fontSize = "30px";
+    return currentValue.textContent = Math.sqrt(currentValue.textContent)
+}
+
+function pi(){
+    currentValue.style.fontSize = "30px";
+    return currentValue.textContent = Math.PI
+}
+function factorial(number){
+    previousValue.textContent = `${currentValue.textContent}!`
+    number = currentValue.textContent 
+    if(number === 0){
+        return number = 1;
+      }
+    for(i = number; i > 1; i--){
+      //n! = n x (n - 1)! 
+      number *= (i -1 )
+     
+    }
+  
+    return currentValue.textContent = number;
+
+}
+
+function setPlusOrMinus(){
+    let num = []
+    
+    if (!isNegative && !currentValue.textContent.includes("-")){
+        isNegative = true;
+        num.push(currentValue.textContent);
+        num.unshift("-");
+
+       return currentValue.textContent = num.join("");
+    }
+    else {
+        isNegative = false;
+        num = Array.from(currentValue.textContent);
+        return currentValue.textContent = num.slice(1).join("");
+    }
+}
 
 
 function removeZero(){ // removes the blinking zero at the start before userinput
@@ -265,19 +332,22 @@ function removeZero(){ // removes the blinking zero at the start before userinpu
     }
 }
 
-function preventTextExpand(){ // prevents text from expanding outside the div container. However, I aim to fix this with CSS so just a temp fix.
-    // previousValue.style.fontSize = "20px"
-    if(currentValue.textContent.length > 12){
-        previousValue.style.fontSize = "16px"
-        currentValue.style.fontSize = "28px";
+
+// UPDATE found a CSS word-wrap and word-break that allows my screen to 'grow' with text input.
+
+// function preventTextExpand(){ // prevents text from expanding outside the div container. However, I aim to fix this with CSS so just a temp fix.  
+//     // previousValue.style.fontSize = "20px"
+//     if(currentValue.textContent.length > 12){
+//         previousValue.style.fontSize = "16px"
+//         currentValue.style.fontSize = "28px";
         
-        if(currentValue.textContent.length > 18){
-            previousValue.style.fontSize = "12px"
-            currentValue.style.fontSize = "20px";
+//         if(currentValue.textContent.length > 18){
+//             previousValue.style.fontSize = "12px"
+//             currentValue.style.fontSize = "20px";
             
-        }
-    }
-}
+//         }
+//     }
+// }
 
 function roundedResult(result){
    return Math.round(result * 10000000) / 10000000;
@@ -326,22 +396,22 @@ function clearScreen(){
     isOperationComplete = false;
     isExpoOption = false;
     isExpoNumber = false;
-
+    isBracketSelected = false;
 
 }
 
-function checkVariables(){
-    console.log(`firstValue = ${firstValue}`)
-    console.log(`operator = ${operator}`)
-    console.log(`secondValue = ${secondValue}`)
-    console.log(isExpoOption)
-    console.log(`result = ${result}`)
+// function checkVariables(){
+//     console.log(`firstValue = ${firstValue}`)
+//     console.log(`operator = ${operator}`)
+//     console.log(`secondValue = ${secondValue}`)
+//     console.log(isExpoOption)
+//     console.log(`result = ${result}`)
  
-    // console.log(`currentOperation = ${currentOperation}`)
-    // console.log(`isOperationComplete = ${isOperationComplete}`)
-    console.log(`setFirstNum = ${setFirstValue}`)
-    console.log(`setSecondValue = ${setSecondValue}`)
-}
+//     // console.log(`currentOperation = ${currentOperation}`)
+//     // console.log(`isOperationComplete = ${isOperationComplete}`)
+//     console.log(`setFirstNum = ${setFirstValue}`)
+//     console.log(`setSecondValue = ${setSecondValue}`)
+// }
 
 
 function impossible(){
