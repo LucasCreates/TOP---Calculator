@@ -103,6 +103,8 @@ button:hover {
 }
 .power {
 	font-size: 18px;
+	position: relative;
+	bottom: 10px;
 	animation: blinkZero 1s infinite;
 }
 .powerNum {

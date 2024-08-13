@@ -29,7 +29,7 @@ let expo;
 let advanceOptions = false;
 let isBracketSelected = false;
 let isNegative = false;
-// let expoSpan;
+
 
 let isOperationComplete = false;
 let currentOperation = 0; // this will determine what operation the user is on. 0 = first number, 1 = operand and 2 = second number 3 = operate for results
@@ -37,12 +37,11 @@ let isExpoOption = false; // if user has pressed the square button.
 let isExpoNumber = false; // when user chooses an exponant number.
 
 
-const screen = document.querySelector(".screen");
+// const screen = document.querySelector(".screen");
 const currentValue = document.querySelector(".current");
 const previousValue = document.querySelector(".previous");
 
 const advanceBtn = document.querySelector("#adv")
-
 const backBtn = document.querySelector("#back")
 
 ////////////////////////////////////////////////////////////////////////
@@ -96,7 +95,8 @@ function setNumToScreen(value){
         if (isExpoNumber){
            
             setExpoNumber(value)
-             previousValue.textContent = `(${currentValue.textContent})^${value}`
+            previousValue.textContent = `${Math.floor(Math.log(currentValue.textContent)/Math.log(value)) + 1}^${value}` //displays what the NUMBER is that is to be powered.
+            isExpoOption = false
         }
      
         
@@ -133,7 +133,7 @@ function evaluateOperation(){
 }
 function displayResults(){
 
-    if (result == Infinity){
+    if (result === Infinity){
         return impossible();
     }
     return previousValue.textContent = `${firstValue} ${operator} ${secondValue} = ${result}`,
@@ -171,7 +171,7 @@ function operate(firstValue, operator, secondValue){
 
 
 
-
+// Main basic operator functions
 
 function add(firstNum, secondNum){
     result = firstNum + secondNum;
@@ -182,8 +182,12 @@ function sub(firstNum, secondNum){
     return result;
 }
 function divide(firstNum, secondNum){
-  
+   
     result = firstNum / secondNum;
+    if (result == Infinity){
+        console.log("impossible")
+        return impossible();
+    }
     return result;
     
 }
@@ -192,24 +196,7 @@ function multiply(firstNum, secondNum){
     return result;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//////////////////////////////////////////////////////////
 
 
 function moreOption(){
@@ -276,13 +263,16 @@ function expoNum(){
         expo.textContent = "n";
         isExpoNumber = true;
         currentValue.appendChild(expo)
-        
+        isExpoOption = true
         return  
     }
 }
 
 function squareRoot(){
     currentValue.style.fontSize = "30px";
+    if(currentValue.textContent === "-1"){
+        return currentValue.textContent = "Imaginary"
+    }
     return currentValue.textContent = Math.sqrt(currentValue.textContent)
 }
 
@@ -293,28 +283,21 @@ function pi(){
 function factorial(number){
     previousValue.textContent = `${currentValue.textContent}!`
     number = currentValue.textContent 
-    if(number === 0){
-        return number = 1;
-      }
+    if(number === 0){return number = 1;}
     for(i = number; i > 1; i--){
-      //n! = n x (n - 1)! 
       number *= (i -1 )
-     
     }
-  
     return currentValue.textContent = number;
-
 }
 
 function setPlusOrMinus(){
     let num = []
-    
     if (!isNegative && !currentValue.textContent.includes("-")){
         isNegative = true;
         num.push(currentValue.textContent);
         num.unshift("-");
 
-       return currentValue.textContent = num.join("");
+        return currentValue.textContent = num.join("");
     }
     else {
         isNegative = false;
@@ -326,14 +309,12 @@ function setPlusOrMinus(){
 
 function removeZero(){ // removes the blinking zero at the start before userinput
     if(currentValue.textContent === "0"){
-        currentValue.textContent = "";
-        currentValue.style.animation = "none";
-        
+        currentValue.textContent = "";   
     }
 }
 
 
-// UPDATE found a CSS word-wrap and word-break that allows my screen to 'grow' with text input.
+// !!!!! UPDATE found a CSS word-wrap and word-break that allows my screen to 'grow' with text input !!!!!
 
 // function preventTextExpand(){ // prevents text from expanding outside the div container. However, I aim to fix this with CSS so just a temp fix.  
 //     // previousValue.style.fontSize = "20px"
@@ -400,36 +381,18 @@ function clearScreen(){
 
 }
 
-// function checkVariables(){
-//     console.log(`firstValue = ${firstValue}`)
-//     console.log(`operator = ${operator}`)
-//     console.log(`secondValue = ${secondValue}`)
-//     console.log(isExpoOption)
-//     console.log(`result = ${result}`)
- 
-//     // console.log(`currentOperation = ${currentOperation}`)
-//     // console.log(`isOperationComplete = ${isOperationComplete}`)
-//     console.log(`setFirstNum = ${setFirstValue}`)
-//     console.log(`setSecondValue = ${setSecondValue}`)
-// }
-
-
 function impossible(){
     let preMessage = "";
     let curMessage = "";
-    currentValue.style.animation = "none";
-    currentValue.style.fontSize = "12px";
-    previousValue.style.fontSize = "12px";
- 
-    screen.style.overflow = "hidden";
+    
     const cryptic = "afghiopqr:'@#stuvwxyz?;1234590,.<bcde>/~[{]}+=_-jklmn!£$%678^&*()";
     for(i = 0; i <= cryptic.length; i++){
         preMessage += cryptic.charAt(Math.floor(Math.random() * cryptic.length -6))
         curMessage += cryptic.charAt(Math.floor(Math.random() * cryptic.length -6))
         
     }
-    return previousValue.textContent = `${preMessage} WARNING ${preMessage}`,
-           currentValue.textContent = `${curMessage} OVERLOAD ${curMessage.slice(3, 7)} SELF-DESTRUCT`;
+    return previousValue.textContent = `${preMessage.slice(0, 2)} WARNING ${preMessage.slice(2,6)}`,
+           currentValue.textContent = `${curMessage.slice(6)} OVERLOAD ${curMessage.slice(0, 7)} SELF-DESTRUCT`;
     
     
 }
@@ -443,32 +406,6 @@ function impossible(){
 
 
 
-
-
-
-
-
-
-
-//// Leaving this here before i delete to make sure i don't mess my code up
-
-
-        // if(currentValue.textContent == "0"){
-        //     currentValue.textContent = "";
-        //     currentValue.style.animation ="none";
-        // }
-        // currentValue.textContent += value
-        // firstValue = currentValue.textContent;
-        // if(currentValue.textContent.length > 12){
-        //     currentValue.style.fontSize = "28px";
-        //     if(currentValue.textContent.length > 18){
-        //         currentValue.style.fontSize = "20px";
-        //         if(currentValue.textContent.length > 25){
-        //             currentOperation == 1 // prevents further number input
-                    
-        //         }
-        //     }
-        // }
 
 
 
